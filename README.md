@@ -85,4 +85,24 @@ Execute these validation checks immediately following a 2-minute policy propagat
 * Hard Booleans: The invitation processing engine evaluates permissions down to a hard 0 
   (Role Checked Missing = Invitation Action Abandoned) or 1 (Role Checked Approved = Invitation 
   Action Completed). No partial or pending invitation authorizations are supported.
+
+
+  ### Project 2 Deployment Summary: External Collaboration Business-to-Business (B2B) Invitation Lockdown
+
+**Problem Statement:**
+The default configuration within the Microsoft Entra ID (MEID) tenant permitted standard, non-administrative user accounts to independently invite external guest users, creating an unregulated outbound identity perimeter. During the initial testing phase of the newly configured restriction policy, the standard user account (Bravo Engineer) bypassed the security boundary to successfully provision an external guest object, while the administrative account (Alpha Engineer) experienced an immediate permission block.
+
+**Root Cause Analysis:**
+The initial deployment complications stemmed from two distinct platform synchronization factors:
+1. Alpha Engineer held an eligible assignment rather than an active assignment for the User Administrator (UA) directory role within the Privileged Identity Management (PIM) tool, meaning the active session tokens lacked the required security claims. Additionally, an asynchronous backend database write failure caused the first successful submission from Alpha Engineer to drop without provisioning the actual directory guest object.
+2. Bravo Engineer experienced a temporary policy bypass because of cloud policy replication latency. The localized directory endpoint evaluated the connection session against the cached legacy tenant policy instead of the updated, restricted rule.
+
+**Remedy and Final State:**
+The project team explicitly activated the User Administrator (UA) directory role for Alpha Engineer using the Privileged Identity Management (PIM) interface to properly update the identity context tokens. The environment was then left un-manipulated for a 20-minute window to ensure the global policy restriction propagated completely across all distributed Microsoft Entra ID (MEID) database endpoints.
+
+Final validation checks using unique external email addresses confirmed successful policy enforcement:
+* Bravo Engineer (standard user) is now completely blocked and receives a hard insufficient privileges error message when attempting an outbound external invitation.
+* Alpha Engineer (User Administrator (UA)) successfully passes the restriction gate to provision new external guest records within the directory database. 
+
+The outbound notification emails were never delivered to the external mailbox due to an internal platform delivery failure, but the core Microsoft Entra ID (MEID) directory security boundary is verified as functional and locked down.
 ================================================================================
