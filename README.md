@@ -104,5 +104,4 @@ Final validation checks using unique external email addresses confirmed successf
 * Bravo Engineer (standard user) is now completely blocked and receives a hard insufficient privileges error message when attempting an outbound external invitation.
 * Alpha Engineer (User Administrator (UA)) successfully passes the restriction gate to provision new external guest records within the directory database. 
 
-* The outbound notification emails were never delivered to the external mailbox due to an internal platform delivery failure, but the core Microsoft Entra ID (MEID) directory security boundary is verified as functional and locked down.
-================================================================================
+ The outbound notification emails were never delivered to the external mailbox due to an internal platform delivery failure, but the core Microsoft Entra ID (MEID) directory security boundary is verified as functional and locked down.
